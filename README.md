@@ -37,18 +37,18 @@ pip install -r requirements.txt
 
 To run on port 8000 (default port):
 ```
-gunicorn app:candidates_app
+gunicorn -b 0.0.0.0 app:candidates_app
 ```
 
 ## Testing
 
-A python test script is provided and can be run as follows:
+A python test script is provided and can be run locally when the app is running as follows:
 ```
-python test_candidates.py <ip/dns address>
+python ./test_candidates.py <ip/dns address>:8000
 ```
 
 ## Containerizing
-A dockerfile is provided to build an image for the application
+A dockerfile may be provided to build an image for the application
 
 ## Routes
 
@@ -78,3 +78,26 @@ A dockerfile is provided to build an image for the application
 - [GET] /candidates
   - Gets list of all candidates from a list, returns HTTP 200 OK and data
   - JSON return
+
+# DynamoDB
+
+If you are standing up this app for the first time, you probably need to create a DynamoDB table.
+
+You can do this by using the following terraform snippet:
+```
+resource "aws_dynamodb_table" "candidate-table" {
+  name           = "Candidates"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "CandidateName"
+
+  attribute {
+    name = "CandidateName"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+}
+```
