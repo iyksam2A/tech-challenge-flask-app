@@ -16,6 +16,7 @@ Instructions can be found here: [Setting Up DynamoDB](https://docs.aws.amazon.co
 Information on IAM for DynamoDB can be found here:
 [DynamoDB - using identity based policies](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/using-identity-based-policies.html)
 
+**This requires Python 3**
 
 ## Running
 Reads environment variable to connect to dynamodb in AWS with a connection string; this must be set first appropriately for your host OS
