@@ -54,7 +54,7 @@ A dockerfile may be provided to build an image for the application
 ## Routes
 
 - [GET] /gtg
-  - Simple healtcheck - returns HTTP 200 OK if everything is working
+  - Simple healthcheck - returns HTTP 200 OK if everything is working
   - Empty return
 
 - [GET] /gtg?details
