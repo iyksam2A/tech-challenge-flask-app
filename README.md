@@ -85,7 +85,7 @@ A dockerfile may be provided to build an image for the application
 If you are standing up this app for the first time, you probably need to create a DynamoDB table.
 
 You can do this by using the following terraform snippet:
-```
+```tf
 resource "aws_dynamodb_table" "candidate-table" {
   name           = "Candidates"
   billing_mode   = "PAY_PER_REQUEST"
@@ -99,6 +99,12 @@ resource "aws_dynamodb_table" "candidate-table" {
   ttl {
     attribute_name = "TimeToExist"
     enabled        = false
+  }
+  
+  lifecycle {
+    ignore_changes = [
+      ttl
+    ]
   }
 }
 ```
