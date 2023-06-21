@@ -2,13 +2,13 @@ import json, os
 from flask import Flask, Response, request
 import boto3
 from boto3.dynamodb.conditions import Key
-import urllib, urllib.request
+import utils
 
-
-instance_id = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read().decode()
+token = utils.get_token()
+instance_id = utils.get_instance_id(token)
 dynamo_table_name = os.environ.get('TC_DYNAMO_TABLE','Candidates')
 dyndb_client = boto3.resource('dynamodb', region_name='us-east-2')
-dyndb_table = dyndb_client.Table('Candidates')
+dyndb_table = dyndb_client.Table(dynamo_table_name)
 
 candidates_app = Flask(__name__)
 
@@ -62,5 +62,3 @@ def get_candidates():
 
       except:
         return "Not Found", 404
-
-
