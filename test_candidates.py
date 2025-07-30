@@ -1,40 +1,52 @@
-import urllib.request
-
-try:
-    with urllib.request.urlopen('http://localhost:8000/gtg') as gtg:
-        if gtg.code == 200:
-            print(u'\033[90m\N{check mark}\033[0m good to go passed')
-        else:
-            raise Exception
-except Exception as ex:
-    print(u'\033[91m\N{ballot x}\033[0m good to go failed:', ex.reason)
+import requests
+import sys
 
 
-try:
-    with urllib.request.urlopen('http://localhost:8000/candidate/John%20Smith', data=b'test') as insert:
-        if insert.code == 200:
-            print(u'\033[90m\N{check mark}\033[0m insert passed')
-        else:
-            raise Exception
-except Exception as ex:
-    print(u'\033[91m\N{ballot x}\033[0m insert failed:', ex.reason)
+def test_gtg(address: str):
+    result = requests.get(
+        f'{address}/gtg'
+    )
+    if result.status_code == 200:
+        print(u'\033[90m\N{check mark}\033[0m good to go passed')
+    else:
+        print(u'\033[91m\N{ballot x}\033[0m good to go failed')
+
+def test_add_candidate(address: str):
+    result = requests.post(
+        f'{address}/candidate/John Smith',
+        data=b'test'
+    )
+    if result.status_code == 200:
+        print(u'\033[90m\N{check mark}\033[0m insert passed')
+    else:
+        print(u'\033[91m\N{ballot x}\033[0m insert failed:', result.json()['error'])
+
+def test_verify_candidate(address: str):
+    result = requests.get(
+        f'{address}/candidate/John Smith'
+    )
+    if result.status_code == 200:
+        print(u'\033[90m\N{check mark}\033[0m verification passed')
+    else:
+        print(u'\033[91m\N{ballot x}\033[0m verification failed:', result.json()['error'])
+
+def test_get_candidates(address: str):
+    result = requests.get(
+        f'{address}/candidates'
+    )
+
+    if result.status_code == 200:
+        print(u'\033[90m\N{check mark}\033[0m candidate list passed')
+    else:
+        print(u'\033[91m\N{ballot x}\033[0m candidate list failed:', result.json()['error'])
 
 
-try:
-    with urllib.request.urlopen('http://localhost:8000/candidate/John%20Smith') as verify:
-        if verify.code == 200:
-            print(u'\033[90m\N{check mark}\033[0m verification passed')
-        else:
-            raise Exception(code=verify.code)
-except Exception as ex:
-    print(u'\033[91m\N{ballot x}\033[0m verification failed:', ex.reason)
+if len(sys.argv) != 2:
+    print("python test_candidates.py http://localhost:8000")
+    exit(-1)
 
-try:
-    with urllib.request.urlopen('http://localhost:8000/candidates') as list:
-        if list.code == 200:
-            print(u'\033[90m\N{check mark}\033[0m candidate list passed')
-        else:
-            raise Exception
-except Exception as ex:
-    print(u'\033[91m\N{ballot x}\033[0m candidate list failed:', ex.reason)
-
+app_address = sys.argv[1]
+test_gtg(app_address)
+test_add_candidate(app_address)
+test_verify_candidate(app_address)
+test_get_candidates(app_address)

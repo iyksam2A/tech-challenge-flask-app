@@ -7,9 +7,7 @@ Simple flask based api that adds data to a database and returns it
 Includes a health check
 
 ## Preparing
-A DynamoDB table is required for this application to function
-
-Instructions can be found here: [Setting Up DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SettingUp.DynamoWebService.html)
+A DynamoDB table is required for this application to function. Example OpenTofu/Terraform code is [provided below](#dynamodb).
 
 **Make sure you create an instance role using IAM to allow access for your ec2 instances to the DynamoDB table or the application will not run!**
 
@@ -40,6 +38,9 @@ To run on port 8000 (default port):
 ```
 gunicorn -b 0.0.0.0 app:candidates_app
 ```
+
+Note:  
+  The TC_DYNAMO_TABLE environment variable defaults to Candidates
 
 ## Testing
 
@@ -84,27 +85,16 @@ A dockerfile may be provided to build an image for the application
 
 If you are standing up this app for the first time, you probably need to create a DynamoDB table.
 
-You can do this by using the following terraform snippet:
+You can do this by using the following OpenTofu/Terraform snippet:
 ```tf
-resource "aws_dynamodb_table" "candidate-table" {
-  name           = "Candidates"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "CandidateName"
+resource "aws_dynamodb_table" "candidate_table" {
+  name         = "Candidates"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "CandidateName"
 
   attribute {
     name = "CandidateName"
     type = "S"
-  }
-
-  ttl {
-    attribute_name = "TimeToExist"
-    enabled        = false
-  }
-  
-  lifecycle {
-    ignore_changes = [
-      ttl
-    ]
   }
 }
 ```
