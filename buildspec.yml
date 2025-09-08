@@ -1,0 +1,23 @@
+version: 0.2
+
+env:
+  variables:
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    PIP_NO_CACHE_DIR: "1"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - echo "Python:" && python --version
+      - echo "Pip:" && pip --version
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - echo "Build completed"
+
+artifacts:
+  files:
+    - '**/*'
