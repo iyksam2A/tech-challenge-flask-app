@@ -1,22 +1,24 @@
 version: 0.0
 os: linux
+
 files:
   - source: /
     destination: /home/ec2-user/tech-challenge-flask-app
+
 hooks:
+  ApplicationStop:
+    - location: scripts/stop_app.sh
+      timeout: 120
+      runas: ec2-user
   BeforeInstall:
     - location: scripts/before_install.sh
       timeout: 300
-      runas: ec2-user
+      runas: root
   AfterInstall:
     - location: scripts/after_install.sh
-      timeout: 300
-      runas: ec2-user
+      timeout: 600
+      runas: root
   ApplicationStart:
     - location: scripts/start_app.sh
-      timeout: 300
-      runas: ec2-user
-  ApplicationStop:
-    - location: scripts/stop_app.sh
       timeout: 300
       runas: ec2-user

@@ -2,11 +2,11 @@
 set -e
 cd /home/ec2-user/tech-challenge-flask-app
 
-# Ensure files are owned by ec2-user (CodeDeploy copies as root)
+# fix ownership and exec bits
 chown -R ec2-user:ec2-user /home/ec2-user/tech-challenge-flask-app
 chmod +x /home/ec2-user/tech-challenge-flask-app/scripts/*.sh || true
 
-# Create venv and install deps as ec2-user
+# create venv and install deps as ec2-user
 sudo -u ec2-user bash -lc '
   set -e
   cd /home/ec2-user/tech-challenge-flask-app
