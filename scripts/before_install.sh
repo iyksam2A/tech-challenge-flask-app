@@ -8,8 +8,5 @@ pkill -f "flask run" || true
 # Prepare app dir
 mkdir -p /home/ec2-user/tech-challenge-flask-app
 
-# Clean old venv to avoid version conflicts
+# Remove old venv (may be owned by root from previous runs)
 rm -rf /home/ec2-user/tech-challenge-flask-app/venv
-
-# Ensure scripts are executable (helps CodeDeploy)
-chmod +x /home/ec2-user/tech-challenge-flask-app/scripts/*.sh 2>/dev/null || true
