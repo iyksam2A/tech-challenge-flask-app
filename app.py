@@ -44,12 +44,25 @@ def get_candidate(name):
 
 @candidates_app.route('/candidate/<name>', methods=['POST'])
 def post_candidate(name):
+    # NEW: support ?party=dem|rep|ind (default independent). Otherwise 400.
+    party_param = request.args.get("party", "")
+    party_raw = party_param.lower() if isinstance(party_param, str) else ""
+
+    if party_raw in ("", "ind"):
+        party = "independent"
+    elif party_raw == "dem":
+        party = "democratic"
+    elif party_raw == "rep":
+        party = "republican"
+    else:
+        return {"error": "invalid party (allowed: dem, rep, ind)"}, 400
+
     try:
-        dyndb_table.put_item(Item={"CandidateName": name})
+        dyndb_table.put_item(Item={"CandidateName": name, "Party": party})
     except Exception:
         return {"error": "Unable to update"}, 500
 
-    return {"CandidateName": name}, 200
+    return {"CandidateName": name, "Party": party}, 200
 
 @candidates_app.route('/candidates', methods=['GET'])
 def get_candidates():
